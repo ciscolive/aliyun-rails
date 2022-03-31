@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "set"
 require "openssl"
 require "faraday"
@@ -11,13 +13,12 @@ module Aliyun
         attr_accessor :endpoint, :api_version, :access_key_id, :access_key_secret,
                       :security_token, :codes, :opts, :verbose
 
-        def configure
+        def init_params
           yield self
         end
 
         # 对象初始化属性
-        def initialize(config = configure, verbose = false)
-
+        def initialize(config = init_params, verbose = false)
           validate config
 
           self.endpoint          = config[:endpoint]

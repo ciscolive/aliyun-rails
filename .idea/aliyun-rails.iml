@@ -21,12 +21,17 @@
     <orderEntry type="library" scope="PROVIDED" name="minitest (v5.15.0, RVM: ruby-3.1.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="parallel (v1.22.1, RVM: ruby-3.1.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="parser (v3.1.1.0, RVM: ruby-3.1.0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rack (v2.2.3, RVM: ruby-3.1.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rainbow (v3.1.1, RVM: ruby-3.1.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rake (v13.0.6, RVM: ruby-3.1.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_parser (v2.2.1, RVM: ruby-3.1.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rexml (v3.2.5, RVM: ruby-3.1.0) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rubocop (v1.26.0, RVM: ruby-3.1.0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubocop (v1.26.1, RVM: ruby-3.1.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rubocop-ast (v1.16.0, RVM: ruby-3.1.0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubocop-minitest (v0.18.0, RVM: ruby-3.1.0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubocop-packaging (v0.5.1, RVM: ruby-3.1.0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubocop-performance (v1.13.3, RVM: ruby-3.1.0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubocop-rails (v2.14.2, RVM: ruby-3.1.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ruby-progressbar (v1.11.0, RVM: ruby-3.1.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="tzinfo (v2.0.4, RVM: ruby-3.1.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="unicode-display_width (v2.1.0, RVM: ruby-3.1.0) [gem]" level="application" />

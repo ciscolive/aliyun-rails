@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "faraday"
 require "securerandom"
 require "active_support/all"
@@ -14,7 +16,6 @@ module Aliyun
   module Rails
     module Connector
       class ROAClient
-
         attr_accessor :endpoint, :api_version, :access_key_id,
                       :access_key_secret, :security_token, :hostname, :opts
 
@@ -161,7 +162,6 @@ module Aliyun
               super("#{message} host_id: #{host_id}, request_id: #{request_id}")
             end
           end
-
       end
     end
   end
