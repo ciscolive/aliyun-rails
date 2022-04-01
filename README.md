@@ -150,4 +150,4 @@ puts response.body
 
 ## 许可证
 
-[MIT](LICENSE.md)
+[MIT](LICENSE.txt)
