@@ -5,7 +5,7 @@
 <a href=" https://www.alibabacloud.com"><img src="https://aliyunsdk-pages.alicdn.com/icons/Aliyun.svg"></a>
 </p>
 
-<h1 align="center">非官方SDK套件-用于RAILS项目的</h1>
+<h1 align="center">非官方SDK套件-用于RAILS项目管理</h1>
 
 <p align="center">
 <a href="https://badge.fury.io/rb/aliyunsdkcore"><img src="https://badge.fury.io/rb/aliyunsdkcore.svg" alt="Gem Version"></a>
@@ -40,6 +40,15 @@ client = Dysms.new(
   access_key_secret: ENV['ACCESS_KEY_SECRET'],
 )
 
+# 可以直接将API参数放到 initializers下
+# Aliyun::Rails.config do |i|
+# i.access_key_id = "XXX"
+# i.access_key_secret = "YYYY"
+# end
+# 随后直接初始化
+# client = Dysms.new
+
+# then use the send_sms method
 response = client.send_sms("1380000000", "SMS_10010", {param1: "11"}, "SIGN_NAME")
 
 puts response

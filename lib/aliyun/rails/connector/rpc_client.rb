@@ -13,18 +13,14 @@ module Aliyun
         attr_accessor :endpoint, :api_version, :access_key_id, :access_key_secret,
                       :security_token, :codes, :opts, :verbose
 
-        def init_params
-          yield self
-        end
-
         # 对象初始化属性
-        def initialize(config = init_params, verbose = false)
+        def initialize(config = {}, verbose = false)
           validate config
 
           self.endpoint          = config[:endpoint]
           self.api_version       = config[:api_version]
-          self.access_key_id     = config[:access_key_id]
-          self.access_key_secret = config[:access_key_secret]
+          self.access_key_id     = config[:access_key_id] || Aliyun::Rails.access_key_id
+          self.access_key_secret = config[:access_key_secret] || Aliyun::Rails.access_key_secret
           self.security_token    = config[:security_token]
           self.opts              = config[:opts] || {}
           self.verbose           = verbose.instance_of?(TrueClass) && verbose
@@ -35,7 +31,7 @@ module Aliyun
         # 通用请求接口
         def request(action:, params: {}, opts: {})
           opts                = self.opts.merge(opts)
-          action              = upcase_first(action) if opts[:format_action]
+          action              = action.upcase_first if opts[:format_action]
           params              = format_params(params) unless opts[:format_params]
           defaults            = default_params
           params              = { Action: action }.merge(defaults).merge(params)
@@ -79,7 +75,7 @@ module Aliyun
             params                 = {
               Format:           "JSON",
               SignatureMethod:  "HMAC-SHA1",
-              SignatureNonce:   SecureRandom.hex(16),
+              SignatureNonce:   SecureRandom.hex(8),
               SignatureVersion: "1.0",
               Timestamp:        Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
               AccessKeyId:      self.access_key_id,
@@ -96,19 +92,24 @@ module Aliyun
 
           # 转换 HASH key 样式
           def format_params(param_hash)
-            param_hash.keys.each { |key| param_hash[upcase_first(key.to_s).to_sym] = param_hash.delete key }
+            param_hash.keys.each { |key| param_hash[(key.to_s.upcase_first).to_sym] = param_hash.delete key }
             param_hash
           end
 
           def validate(config)
+            config.with_indifferent_access
             raise ArgumentError, 'must pass "config"' unless config
             raise ArgumentError, 'must pass "config[:endpoint]"' unless config[:endpoint]
             unless config[:endpoint].match?(/^http[s]?:/i)
               raise ArgumentError, '"config.endpoint" must starts with \'https://\' or \'http://\'.'
             end
             raise ArgumentError, 'must pass "config[:api_version]"' unless config[:api_version]
-            raise ArgumentError, 'must pass "config[:access_key_id]"' unless config[:access_key_id]
-            raise ArgumentError, 'must pass "config[:access_key_secret]"' unless config[:access_key_secret]
+            unless config[:access_key_id] || Aliyun::Rails.access_key_id
+              raise ArgumentError, 'must pass "config[:access_key_id]" or define "Aliyun::Rails.access_key_id"'
+            end
+            unless config[:access_key_secret] || Aliyun::Rails.access_key_secret
+              raise ArgumentError, 'must pass "config[:access_key_secret]" or define "Aliyun::Rails.access_key_secret"'
+            end
           end
       end
     end
