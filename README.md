@@ -33,12 +33,14 @@ $ gem install aliyun-rails
 
 ## 使用
 
+- 加载模块自动挂载几个常量：Dysms、Dyvms、RPCClient和ROAClient
+
 CALL_TTS 实例：
 
 ```ruby
 require "aliyun-rails"
 
-client = Aliyun::Dysms.new(
+client = Aliyun::Dyvms.new(
   access_key_id:     ENV['ACCESS_KEY_ID'],
   access_key_secret: ENV['ACCESS_KEY_SECRET'],
 )
@@ -49,9 +51,9 @@ client = Aliyun::Dysms.new(
 #   aliyun.access_key_secret = "YYY"
 # end
 # 随后直接初始化
-# client = Aliyun::Dysms.new
+# client = Aliyun::Dyvms.new
 
-# then use the send_sms method
+# 调用语音方法 single_call_by_tts method
 response = client.single_call_by_tts("075566668888", "13900001234", "TTS_CODE", { TTS_PARAM: 2022 })
 
 puts response
@@ -76,7 +78,7 @@ client = Aliyun::Dysms.new(
 # 随后直接初始化
 # client = Dysms.new
 
-# then use the send_sms method
+# 调用短信方法 send_sms method
 response = client.send_sms("1380000000", "SMS_10010", { param1: "11" }, "SIGN_NAME")
 
 puts response
