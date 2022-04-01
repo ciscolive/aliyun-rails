@@ -8,14 +8,15 @@
 <h1 align="center">非官方SDK套件-用于RAILS项目管理阿里云相关资源，已集成接口鉴权、短信服务、和语音服务功能</h1>
 
 <p align="center">
-<a href="https://badge.fury.io/rb/aliyunsdkcore"><img src="https://badge.fury.io/rb/aliyunsdkcore.svg" alt="Gem Version"></a>
-<a href="https://travis-ci.org/aliyun/openapi-core-ruby-sdk"><img src="https://travis-ci.org/aliyun/openapi-core-ruby-sdk.svg?branch=master" alt="Build Status"></a>
-<a href="https://ci.appveyor.com/project/aliyun/openapi-core-ruby-sdk/branch/master"><img src="https://ci.appveyor.com/api/projects/status/uyepkk5bjbynofvu/branch/master?svg=true" alt="Build status"></a>
-<a href="https://codecov.io/gh/aliyun/openapi-core-ruby-sdk"><img src="https://codecov.io/gh/aliyun/openapi-core-ruby-sdk/branch/master/graph/badge.svg" alt="codecov"></a>
+<a href="https://badge.fury.io/rb/aliyun-rails"><img src="https://badge.fury.io/rb/aliyun-rails.svg" alt="Gem Version"></a>
+<a href="https://travis-ci.org/ciscolive/aliyun-rails"><img src="https://travis-ci.org/ciscolive/aliyun-rails.svg?branch=master" alt="Build Status"></a>
+<a href="https://ci.appveyor.com/project/ciscolive/aliyun-rails/branch/master"><img src="https://ci.appveyor.com/api/projects/status/uyepkk5bjbynofvu/branch/master?svg=true" alt="Build status"></a>
+<a href="https://codecov.io/gh/ciscolive/aliyun-rails"><img src="https://codecov.io/gh/ciscolive/aliyun-rails/branch/master/graph/badge.svg" alt="codecov"></a>
 </p>
 
 
-支持 Rails 轻松访问阿里云服务，例如：弹性云主机（ECS）、负载均衡（SLB）、云监控（CloudMonitor）等。 已集成阿里云短信服务和语音服务，满足日常短信和电话告警需求。
+- 支持 Rails 轻松访问阿里云服务，例如：弹性云主机（ECS）、负载均衡（SLB）、云监控（CloudMonitor）等。 
+- 已集成阿里云短信服务和语音服务，满足日常短信和电话告警需求。
 
 本文档介绍如何安装和使用 aliyun-rails
 
