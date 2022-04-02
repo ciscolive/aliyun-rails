@@ -35,4 +35,9 @@
     <orderEntry type="library" scope="PROVIDED" name="tzinfo (v2.0.4, ruby-3.1.1-p18) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="unicode-display_width (v2.1.0, ruby-3.1.1-p18) [gem]" level="application" />
   </component>
+  <component name="RakeTasksCache">
+    <option name="myRootTask">
+      <RakeTaskImpl id="rake" />
+    </option>
+  </component>
 </module>

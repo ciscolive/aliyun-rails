@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"]   = "https://github.com/ciscolive/aliyun-rails/blob/main/CHANGELOG.md"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+    Dir["{app,config,db,lib}/**/*", "LICENSE.txt", "Rakefile", "README.md"]
   end
 
   spec.add_dependency "activesupport", ">= 3.0.0"
