@@ -19,7 +19,7 @@ module Aliyun
         TtsParam:         tts_param.to_json
       }
       opts   = { method: "POST", timeout: 15000 }
-      request(action: "SendSms", params: params, opts: opts)
+      request(action: "SingleCallByTts", params: params, opts: opts)
     end
   end
 end
