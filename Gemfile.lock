@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    aliyun-rails (0.1.14)
+    aliyun-rails (0.1.21)
       activesupport (>= 3.0.0)
       faraday (>= 0.15.4)
 

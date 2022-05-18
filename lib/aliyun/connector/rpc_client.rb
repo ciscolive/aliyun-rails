@@ -1,25 +1,24 @@
-# frozen_string_literal: true
-
 require "set"
 require "openssl"
 require "faraday"
-require "erb"
 require "active_support/all"
 
 module Aliyun
   module Connector
     class RPCClient
+
       attr_accessor :endpoint, :api_version, :access_key_id, :access_key_secret,
                     :security_token, :codes, :opts, :verbose
 
       # 对象初始化属性
-      def initialize(config = {}, verbose = false)
+      def initialize(config, verbose = false)
+
         validate config
 
         self.endpoint          = config[:endpoint]
         self.api_version       = config[:api_version]
-        self.access_key_id     = config[:access_key_id] || Aliyun::Rails.access_key_id
-        self.access_key_secret = config[:access_key_secret] || Aliyun::Rails.access_key_secret
+        self.access_key_id     = config[:access_key_id] || Aliyun.access_key_id
+        self.access_key_secret = config[:access_key_secret] || Aliyun.access_key_secret
         self.security_token    = config[:security_token]
         self.opts              = config[:opts] || {}
         self.verbose           = verbose.instance_of?(TrueClass) && verbose
@@ -30,30 +29,32 @@ module Aliyun
 
       # 通用请求接口
       def request(action:, params: {}, opts: {})
-        opts                = self.opts.merge(opts)
-        action              = action.upcase_first if opts[:format_action]
-        params              = format_params(params) unless opts[:format_params]
-        defaults            = default_params
-        params              = { Action: action }.merge(defaults).merge(params)
-        method              = (opts[:method] || "GET").upcase
-        sign                = "#{method}&#{encode('/')}&#{encode(params.to_query)}"
-        secret              = "#{self.access_key_secret}&"
-        signature           = Base64.encode64(OpenSSL::HMAC.digest("sha1", secret, sign)).strip
-        params["Signature"] = signature
+        opts           = self.opts.merge(opts)
+        action         = action.upcase_first if opts[:format_action]
+        params         = format_params(params) unless opts[:format_params]
+        defaults       = default_params
+        params         = { Action: action }.merge(defaults).merge(params)
+        method         = (opts[:method] || "GET").upcase
+        normalized     = normalize(params)
+        canonicalized  = canonicalize(normalized)
+        string_to_sign = "#{method}&#{encode('/')}&#{encode(canonicalized)}"
+        secret         = "#{self.access_key_secret}&"
+        signature      = Base64.encode64(OpenSSL::HMAC.digest("sha1", secret, string_to_sign)).strip
+        normalized.push(["Signature", encode(signature)])
 
         # 转换为 query 样式
-        query_string = params.to_query
+        querystring = canonicalize(normalized)
 
         # 特殊处理 POST
-        uri = opts[:method] == "POST" ? "/" : "/?#{query_string}"
+        uri = opts[:method] == "POST" ? "/" : "/?#{querystring}"
 
         # 初始化会话
-        response = connection.send(method.downcase, uri) do |r|
+        response = connection.send(method.downcase, uri) do |request|
           if opts[:method] == "POST"
-            r.headers["Content-Type"] = "application/x-www-form-urlencoded"
-            r.body                    = query_string
+            request.headers["Content-Type"] = "application/x-www-form-urlencoded"
+            request.body                    = querystring
           end
-          r.headers["User-Agent"] = DEFAULT_UA
+          request.headers["User-Agent"] = DEFAULT_UA
         end
 
         # 解析接口响应
@@ -72,28 +73,59 @@ module Aliyun
 
         # 设置缺省参数
         def default_params
-          params                 = {
-            Format:           "JSON",
-            SignatureMethod:  "HMAC-SHA1",
-            SignatureNonce:   SecureRandom.hex(8),
-            SignatureVersion: "1.0",
-            Timestamp:        Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            AccessKeyId:      self.access_key_id,
-            Version:          self.api_version,
+          default_params                  = {
+            "Format"           => "JSON",
+            "SignatureMethod"  => "HMAC-SHA1",
+            "SignatureNonce"   => SecureRandom.hex(16),
+            "SignatureVersion" => "1.0",
+            "Timestamp"        => Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "AccessKeyId"      => self.access_key_id,
+            "Version"          => self.api_version,
           }
-          params[:SecurityToken] = self.security_token if self.security_token.present?
-          params
+          default_params["SecurityToken"] = self.security_token if self.security_token
+          default_params
         end
 
         # 消息签名需要
-        def encode(input)
-          ERB::Util.url_encode input
+        def encode(string)
+          ERB::Util.url_encode(string)
         end
 
         # 转换 HASH key 样式
         def format_params(param_hash)
           param_hash.keys.each { |key| param_hash[(key.to_s.upcase_first).to_sym] = param_hash.delete key }
           param_hash
+        end
+
+        def replace_repeat_list(target, key, repeat)
+          repeat.each_with_index do |item, index|
+            if item && item.instance_of?(Hash)
+              item.each_key { |k| target["#{key}.#{index.next}.#{k}"] = item[k] }
+            else
+              target["#{key}.#{index.next}"] = item
+            end
+          end
+          target
+        end
+
+        def flat_params(params)
+          target = {}
+          params.each do |key, value|
+            if value.instance_of?(Array)
+              replace_repeat_list(target, key, value)
+            else
+              target[key.to_s] = value
+            end
+          end
+          target.to_query
+        end
+
+        def normalize(params)
+          flat_params(params).sort.to_h.map { |key, value| [encode(key), encode(value)] }
+        end
+
+        def canonicalize(normalized)
+          normalized.map { |element| "#{element.first}=#{element.last}" }.join("&")
         end
 
         def validate(config = {})
@@ -104,11 +136,11 @@ module Aliyun
             raise ArgumentError, '"config.endpoint" must starts with \'https://\' or \'http://\'.'
           end
           raise ArgumentError, 'must pass "config[:api_version]"' unless config[:api_version]
-          unless config[:access_key_id] || Aliyun::Rails.access_key_id
-            raise ArgumentError, 'must pass "config[:access_key_id]" or define "Aliyun::Rails.access_key_id"'
+          unless config[:access_key_id] || Aliyun.access_key_id
+            raise ArgumentError, 'must pass "config[:access_key_id]" or define "Aliyun.access_key_id"'
           end
-          unless config[:access_key_secret] || Aliyun::Rails.access_key_secret
-            raise ArgumentError, 'must pass "config[:access_key_secret]" or define "Aliyun::Rails.access_key_secret"'
+          unless config[:access_key_secret] || Aliyun.access_key_secret
+            raise ArgumentError, 'must pass "config[:access_key_secret]" or define "Aliyun.access_key_secret"'
           end
         end
     end
