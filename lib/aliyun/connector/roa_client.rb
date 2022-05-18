@@ -23,8 +23,8 @@ module Aliyun
 
         self.endpoint          = config[:endpoint]
         self.api_version       = config[:api_version]
-        self.access_key_id     = config[:access_key_id]
-        self.access_key_secret = config[:access_key_secret]
+        self.access_key_id     = config[:access_key_id] || Aliyun.access_key_id
+        self.access_key_secret = config[:access_key_secret] || Aliyun.access_key_secret
         self.security_token    = config[:security_token]
       end
 
